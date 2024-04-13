@@ -1,13 +1,13 @@
-package org.example.itplanetstage2;
+package org.example.climatica;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ItPlanetStage2Application {
+public class ClimaticaApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ItPlanetStage2Application.class, args);
+        SpringApplication.run(ClimaticaApplication.class, args);
     }
 
 }
