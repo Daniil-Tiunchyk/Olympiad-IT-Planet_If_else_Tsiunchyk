@@ -91,7 +91,7 @@ public class RegionController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized access"),
                     @ApiResponse(responseCode = "404", description = "Region or weather not found")
             })
-    @PostMapping("/region/{regionId}/weather/{weatherId}")
+    @PostMapping("/{regionId}/weather/{weatherId}")
     public ResponseEntity<WeatherData> addWeatherToRegion(
             @PathVariable Long regionId,
             @PathVariable Long weatherId,
@@ -122,7 +122,7 @@ public class RegionController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized access"),
                     @ApiResponse(responseCode = "404", description = "Region not found")
             })
-    @DeleteMapping("/region/{regionId}/weather/{weatherId}")
+    @DeleteMapping("/{regionId}/weather/{weatherId}")
     public ResponseEntity<Region> deleteWeatherFromRegion(
             @PathVariable Long regionId,
             @PathVariable Long weatherId) {

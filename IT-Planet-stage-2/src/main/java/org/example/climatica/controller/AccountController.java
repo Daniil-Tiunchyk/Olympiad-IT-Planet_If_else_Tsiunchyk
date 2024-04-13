@@ -1,9 +1,7 @@
 package org.example.climatica.controller;
 
-import org.example.climatica.dto.LoginDto;
 import org.example.climatica.dto.UserDto;
 import org.example.climatica.service.UserService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,34 +15,14 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
-@Tag(name = "User Controller", description = "APIs for managing users in the system")
-public class UserController {
+@RequestMapping("/accounts")
+@Tag(name = "Account Controller", description = "APIs for managing accounts in the system")
+public class AccountController {
 
     private final UserService userService;
 
-    public UserController(UserService userService) {
+    public AccountController(UserService userService) {
         this.userService = userService;
-    }
-
-    @Operation(summary = "Create a new user", responses = {
-            @ApiResponse(description = "User created successfully", responseCode = "201", content = @Content(schema = @Schema(implementation = UserDto.class))),
-            @ApiResponse(description = "Bad Request", responseCode = "400"),
-            @ApiResponse(description = "Forbidden - authorized account", responseCode = "403"),
-            @ApiResponse(description = "Conflict - email already exists", responseCode = "409")
-    })
-    @PostMapping("/registration")
-    public ResponseEntity<UserDto> registerUser(@Valid @RequestBody UserDto userDto) {
-        return new ResponseEntity<>(userService.registerUser(userDto), HttpStatus.CREATED);
-    }
-
-    @Operation(summary = "User login", responses = {
-            @ApiResponse(description = "User logged in successfully", responseCode = "200", content = @Content(schema = @Schema(implementation = UserDto.class))),
-            @ApiResponse(description = "Unauthorized - incorrect email or password", responseCode = "401")
-    })
-    @PostMapping("/login")
-    public ResponseEntity<UserDto> loginUser(@Valid @RequestBody LoginDto loginDto) {
-        return ResponseEntity.ok(userService.loginUser(loginDto));
     }
 
     @Operation(summary = "Get user by ID", responses = {
@@ -53,7 +31,7 @@ public class UserController {
             @ApiResponse(description = "Unauthorized", responseCode = "401"),
             @ApiResponse(description = "User not found", responseCode = "404")
     })
-    @GetMapping("/accounts/{accountId}")
+    @GetMapping("/{accountId}")
     public ResponseEntity<UserDto> getUserById(@PathVariable int accountId) {
         return ResponseEntity.ok(userService.getUserById(accountId));
     }
@@ -64,7 +42,7 @@ public class UserController {
                     @ApiResponse(description = "Bad Request - invalid form or size parameters", responseCode = "400"),
                     @ApiResponse(description = "Unauthorized - invalid authentication credentials", responseCode = "401")
             })
-    @GetMapping("/accounts/search")
+    @GetMapping("/search")
     public ResponseEntity<List<UserDto>> searchUsers(@RequestParam(required = false) String firstName,
                                                      @RequestParam(required = false) String lastName,
                                                      @RequestParam(required = false) String email,
@@ -84,7 +62,7 @@ public class UserController {
             @ApiResponse(description = "Forbidden - not owner or user not found", responseCode = "403"),
             @ApiResponse(description = "Conflict - email already exists", responseCode = "409")
     })
-    @PutMapping("/accounts/{accountId}")
+    @PutMapping("/{accountId}")
     public ResponseEntity<UserDto> updateUser(@PathVariable int accountId, @Valid @RequestBody UserDto userDto) {
         return ResponseEntity.ok(userService.updateUser(accountId, userDto));
     }
@@ -95,7 +73,7 @@ public class UserController {
             @ApiResponse(description = "Unauthorized", responseCode = "401"),
             @ApiResponse(description = "Forbidden - not owner or user not found", responseCode = "403")
     })
-    @DeleteMapping("/accounts/{accountId}")
+    @DeleteMapping("/{accountId}")
     public ResponseEntity<Void> deleteUser(@PathVariable int accountId) {
         userService.deleteUser(accountId);
         return ResponseEntity.ok().build();

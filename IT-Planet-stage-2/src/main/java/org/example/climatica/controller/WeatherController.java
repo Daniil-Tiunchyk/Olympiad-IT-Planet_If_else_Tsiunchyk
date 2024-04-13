@@ -110,7 +110,7 @@ public class WeatherController {
         }
     }
 
-    @DeleteMapping("/region/weather/{regionId}")
+    @DeleteMapping("/{regionId}")
     @Operation(summary = "Delete weather information by region ID",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Weather data deleted successfully"),
