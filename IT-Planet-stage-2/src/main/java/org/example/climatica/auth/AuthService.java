@@ -1,8 +1,11 @@
-package org.example.climatica.service;
+package org.example.climatica.auth;
 
-import org.example.climatica.dto.*;
+import org.example.climatica.auth.dto.LoginDto;
+import org.example.climatica.auth.dto.UserIdDto;
+import org.example.climatica.auth.dto.UserRegistrationDto;
+import org.example.climatica.accounts.dto.UserResponseDto;
 import org.example.climatica.model.User;
-import org.example.climatica.repository.UserRepository;
+import org.example.climatica.accounts.AccountRepository;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,12 +15,12 @@ import java.util.Optional;
 
 @Service
 public class AuthService {
-    private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
 
     private final PasswordEncoder passwordEncoder;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
+    public AuthService(AccountRepository accountRepository, PasswordEncoder passwordEncoder) {
+        this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -28,7 +31,7 @@ public class AuthService {
         user.setEmail(userDto.getEmail().trim().toLowerCase());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-        User savedUser = userRepository.save(user);
+        User savedUser = accountRepository.save(user);
         UserResponseDto userResponseDto = new UserResponseDto();
 
         userResponseDto.setId(savedUser.getId());
@@ -41,7 +44,7 @@ public class AuthService {
     }
 
     public UserIdDto loginUser(LoginDto loginDto) {
-        Optional<User> user = userRepository.findByEmail(loginDto.getEmail());
+        Optional<User> user = accountRepository.findByEmail(loginDto.getEmail());
         if (user.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
         }

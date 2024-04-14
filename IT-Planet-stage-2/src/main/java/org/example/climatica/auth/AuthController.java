@@ -1,4 +1,4 @@
-package org.example.climatica.controller;
+package org.example.climatica.auth;
 
 import io.micrometer.common.util.StringUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -6,9 +6,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.example.climatica.dto.*;
-import org.example.climatica.service.AuthService;
-import org.example.climatica.service.AccountService;
+import org.example.climatica.accounts.dto.UserResponseDto;
+import org.example.climatica.auth.dto.LoginDto;
+import org.example.climatica.auth.dto.UserIdDto;
+import org.example.climatica.auth.dto.UserRegistrationDto;
+import org.example.climatica.accounts.AccountService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;

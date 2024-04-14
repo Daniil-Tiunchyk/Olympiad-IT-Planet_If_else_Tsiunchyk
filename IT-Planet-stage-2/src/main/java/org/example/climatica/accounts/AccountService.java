@@ -1,9 +1,8 @@
-package org.example.climatica.service;
+package org.example.climatica.accounts;
 
-import org.example.climatica.dto.UserRegistrationDto;
-import org.example.climatica.dto.UserResponseDto;
+import org.example.climatica.accounts.dto.UserResponseDto;
+import org.example.climatica.auth.dto.UserRegistrationDto;
 import org.example.climatica.model.User;
-import org.example.climatica.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -17,14 +16,14 @@ import java.util.stream.Collectors;
 
 @Service
 public class AccountService {
-    public AccountService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public AccountService(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
     }
 
-    private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
 
     public UserResponseDto getUserById(int id) {
-        User user = userRepository.findById(id)
+        User user = accountRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         UserResponseDto userResponseDto = new UserResponseDto();
         userResponseDto.setId(user.getId());
@@ -35,10 +34,10 @@ public class AccountService {
     }
 
     public UserResponseDto updateUser(int id, UserRegistrationDto userDto) {
-        User currentUser = userRepository.findById(id)
+        User currentUser = accountRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "User not found"));
 
-        if (!currentUser.getEmail().equals(userDto.getEmail()) && userRepository.findByEmail(userDto.getEmail()).isPresent()) {
+        if (!currentUser.getEmail().equals(userDto.getEmail()) && accountRepository.findByEmail(userDto.getEmail()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
         }
 
@@ -49,7 +48,7 @@ public class AccountService {
         currentUser.setFirstName(userDto.getFirstName());
         currentUser.setLastName(userDto.getLastName());
         currentUser.setEmail(userDto.getEmail());
-        User savedUser = userRepository.save(currentUser);
+        User savedUser = accountRepository.save(currentUser);
 
         UserResponseDto userResponseDto = new UserResponseDto();
         userResponseDto.setId(savedUser.getId());
@@ -66,7 +65,7 @@ public class AccountService {
 
     public List<UserResponseDto> searchUsers(String firstName, String lastName, String email, int from, int size) {
         Pageable pageable = PageRequest.of(from, size);
-        Page<User> page = userRepository.findByFirstNameContainingAndLastNameContainingAndEmailContaining(
+        Page<User> page = accountRepository.findByFirstNameContainingAndLastNameContainingAndEmailContaining(
                 firstName, lastName, email, pageable);
 
         return page.getContent().stream()
@@ -75,17 +74,17 @@ public class AccountService {
     }
 
     public boolean findByEmail(String email) {
-        return userRepository.findByEmail(email).isPresent();
+        return accountRepository.findByEmail(email).isPresent();
     }
 
     public void deleteUser(int id) {
-        if (!userRepository.existsById(id)) {
+        if (!accountRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Account not found or not authorized to delete");
         }
         if (!isAuthorizedToDelete(id)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized to delete this user");
         }
-        userRepository.deleteById(id);
+        accountRepository.deleteById(id);
     }
 
     private boolean isAuthorizedToDelete(int userId) {

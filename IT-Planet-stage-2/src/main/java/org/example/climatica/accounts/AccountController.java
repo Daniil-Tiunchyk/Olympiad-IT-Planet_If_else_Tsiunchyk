@@ -1,10 +1,8 @@
-package org.example.climatica.controller;
+package org.example.climatica.accounts;
 
 import io.micrometer.common.util.StringUtils;
-import org.example.climatica.dto.UserDto;
-import org.example.climatica.dto.UserRegistrationDto;
-import org.example.climatica.dto.UserResponseDto;
-import org.example.climatica.service.AccountService;
+import org.example.climatica.accounts.dto.UserResponseDto;
+import org.example.climatica.auth.dto.UserRegistrationDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,7 +44,7 @@ public class AccountController {
 
     @Operation(summary = "Search accounts", description = "Search for accounts by first name, last name, or email with pagination",
             responses = {
-                    @ApiResponse(description = "Search results returned successfully", responseCode = "200", content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserDto.class)))),
+                    @ApiResponse(description = "Search results returned successfully", responseCode = "200", content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserResponseDto.class)))),
                     @ApiResponse(description = "Bad Request - invalid form or size parameters", responseCode = "400"),
                     @ApiResponse(description = "Unauthorized - invalid authentication credentials", responseCode = "401")
             })

@@ -3,7 +3,6 @@ package org.example.climatica.service;
 import org.example.climatica.exception.InvalidParametersException;
 import org.example.climatica.exception.NotFoundException;
 import org.example.climatica.exception.UnauthorizedException;
-import org.example.climatica.model.Region;
 import org.example.climatica.model.WeatherData;
 import org.example.climatica.repository.WeatherRepository;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package org.example.climatica.dto;
+package org.example.climatica.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

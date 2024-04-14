@@ -1,4 +1,4 @@
-package org.example.climatica.dto;
+package org.example.climatica.accounts.dto;
 
 import lombok.Data;
 

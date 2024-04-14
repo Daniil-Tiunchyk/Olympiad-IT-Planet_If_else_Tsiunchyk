@@ -2,7 +2,6 @@ package org.example.climatica.service;
 
 import org.example.climatica.model.RegionType;
 import org.example.climatica.repository.RegionTypeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
