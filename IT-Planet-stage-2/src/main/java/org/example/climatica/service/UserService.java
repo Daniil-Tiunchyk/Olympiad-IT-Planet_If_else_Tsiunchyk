@@ -1,12 +1,9 @@
 package org.example.climatica.service;
 
-import org.example.climatica.dto.LoginDto;
 import org.example.climatica.dto.UserDto;
 import org.example.climatica.model.User;
 import org.example.climatica.repository.UserRepository;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,36 +14,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     private final UserRepository userRepository;
-
-    private final PasswordEncoder passwordEncoder;
-
-
-    public UserDto registerUser(UserDto userDto) {
-        User user = new User();
-        user.setFirstName(userDto.getFirstName());
-        user.setLastName(userDto.getLastName());
-        user.setEmail(userDto.getEmail());
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        userRepository.save(user);
-        return userDto;
-    }
-
-    public UserDto loginUser(LoginDto loginDto) {
-        User user = userRepository.findByEmail(loginDto.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        if (passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
-            return convertToDto(user);
-        } else {
-            throw new BadCredentialsException("Invalid credentials");
-        }
-    }
 
     public UserDto getUserById(int id) {
         User user = userRepository.findById(id)
@@ -72,6 +44,10 @@ public class UserService {
         return page.getContent().stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
+    }
+
+    public boolean findByEmail(String email) {
+        return userRepository.findByEmail(email).isPresent();
     }
 
     public void deleteUser(int id) {
