@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.climatica.dto.*;
 import org.example.climatica.service.AuthService;
-import org.example.climatica.service.UserService;
+import org.example.climatica.service.AccountService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -26,11 +26,11 @@ import javax.validation.Valid;
 @Tag(name = "Auth Controller", description = "APIs for registration and authorisation")
 public class AuthController {
     private final AuthService authService;
-    private final UserService userService;
+    private final AccountService accountService;
 
-    public AuthController(AuthService authService, UserService userService) {
+    public AuthController(AuthService authService, AccountService accountService) {
         this.authService = authService;
-        this.userService = userService;
+        this.accountService = accountService;
     }
 
     @Operation(summary = "Create a new user", responses = {
@@ -59,7 +59,7 @@ public class AuthController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid email format");
         }
 
-        if (userService.findByEmail(email.toLowerCase())) {
+        if (accountService.findByEmail(email.toLowerCase())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "An account with this email already exists");
         }
 

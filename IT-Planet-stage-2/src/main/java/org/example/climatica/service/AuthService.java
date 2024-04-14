@@ -52,13 +52,4 @@ public class AuthService {
             throw new BadCredentialsException("Invalid credentials");
         }
     }
-
-    private UserDto convertToDto(Optional<User> user) {
-        UserDto userDto = new UserDto();
-        userDto.setId(user.get().getId());
-        userDto.setFirstName(user.get().getFirstName());
-        userDto.setLastName(user.get().getLastName());
-        userDto.setEmail(user.get().getEmail());
-        return userDto;
-    }
 }
