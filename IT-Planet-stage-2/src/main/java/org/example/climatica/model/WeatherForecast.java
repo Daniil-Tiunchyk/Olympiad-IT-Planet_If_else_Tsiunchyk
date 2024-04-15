@@ -18,6 +18,6 @@ public class WeatherForecast {
     private Long id;
     private LocalDateTime dateTime;
     private Float temperature;
-    private String weatherCondition;
+    private WeatherCondition weatherCondition;
     private Long regionId;
 }

@@ -11,11 +11,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
+import java.util.Arrays;
+import java.util.List;
+
 @RestController
 @RequestMapping("/region/weather/forecast")
 public class WeatherForecastController {
 
     private final WeatherForecastService weatherForecastService;
+    private static final List<String> VALID_WEATHER_CONDITIONS = Arrays.asList("CLEAR", "CLOUDY", "RAIN", "SNOW", "FOG", "STORM");
 
     public WeatherForecastController(WeatherForecastService weatherForecastService) {
         this.weatherForecastService = weatherForecastService;
@@ -44,7 +50,7 @@ public class WeatherForecastController {
     })
     @PutMapping("/{forecastId}")
     public ResponseEntity<WeatherForecastDto> updateForecast(@PathVariable Long forecastId, @RequestBody UpdateWeatherForecastDto updateDto) {
-        if (forecastId == null || forecastId <= 0 || updateDto.getDateTime() == null) {
+        if (forecastId == null || forecastId <= 0 || isValidDateTime(String.valueOf(updateDto.getDateTime())) || isValidWeatherCondition(String.valueOf(updateDto.getWeatherCondition()))) {
             return ResponseEntity.badRequest().build();
         }
         WeatherForecastDto updatedForecast = weatherForecastService.updateForecast(forecastId, updateDto);
@@ -52,18 +58,31 @@ public class WeatherForecastController {
     }
 
     @Operation(summary = "Add a weather forecast", responses = {
-            @ApiResponse(description = "Forecast created", responseCode = "200", content = @Content(schema = @Schema(implementation = WeatherForecastDto.class))),
+            @ApiResponse(description = "Forecast created", responseCode = "201", content = @Content(schema = @Schema(implementation = WeatherForecastDto.class))),
             @ApiResponse(description = "Invalid input data", responseCode = "400"),
             @ApiResponse(description = "Unauthorized", responseCode = "401"),
             @ApiResponse(description = "Region not found", responseCode = "404")
     })
     @PostMapping("/")
     public ResponseEntity<WeatherForecastDto> createForecast(@RequestBody CreateWeatherForecastDto createDto) {
-        if (createDto.getRegionId() == null || createDto.getRegionId() <= 0 || createDto.getDateTime() == null) {
+        if (createDto.getRegionId() == null || createDto.getRegionId() <= 0 || isValidDateTime(String.valueOf(createDto.getDateTime())) || isValidWeatherCondition(String.valueOf(createDto.getWeatherCondition()))) {
             return ResponseEntity.badRequest().build();
         }
         WeatherForecastDto newForecast = weatherForecastService.createForecast(createDto);
         return newForecast != null ? ResponseEntity.status(HttpStatus.CREATED).body(newForecast) : ResponseEntity.notFound().build();
+    }
+
+    private boolean isValidDateTime(String dateTime) {
+        try {
+            LocalDateTime.parse(dateTime);
+            return false;
+        } catch (DateTimeParseException e) {
+            return true;
+        }
+    }
+
+    private boolean isValidWeatherCondition(String condition) {
+        return !VALID_WEATHER_CONDITIONS.contains(condition);
     }
 
     @Operation(summary = "Delete a weather forecast", responses = {

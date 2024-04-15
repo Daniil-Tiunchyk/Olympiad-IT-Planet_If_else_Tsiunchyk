@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import org.example.climatica.exception.InvalidParametersException;
 import org.example.climatica.exception.NotFoundException;
@@ -21,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
+@Tag(name = "Weather Controller", description = "API for managing weather")
 @RequestMapping("/region/weather")
 public class WeatherController {
 
