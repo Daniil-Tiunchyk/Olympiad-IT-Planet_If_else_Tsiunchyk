@@ -44,6 +44,8 @@ Swagger доступен по адресу: [http://localhost:8080/swagger-ui/in
    mvn spring-boot:run
    ```
 
+После выполнения указанных команд для сборки и запуска приложения через Maven, Spring Boot приложение будет запущено и доступно по адресу `http://localhost:8080`.
+
 Swagger доступен по адресу: [http://localhost:8080/swagger-ui/index.html#/](http://localhost:8080/swagger-ui/index.html#/)
 
 ## Лицензия
