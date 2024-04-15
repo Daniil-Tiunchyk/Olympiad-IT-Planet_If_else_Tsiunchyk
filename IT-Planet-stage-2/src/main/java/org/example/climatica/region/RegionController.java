@@ -6,6 +6,7 @@ import org.example.climatica.model.Region;
 import org.example.climatica.model.WeatherData;
 import org.example.climatica.region.dro.RegionDTO;
 import org.example.climatica.region.dro.RegionResponseDto;
+import org.example.climatica.region.dro.RegionUpdateDTO;
 import org.example.climatica.weather.WeatherService;
 import org.example.climatica.weather.dto.WeatherDataResponse;
 import org.springframework.http.HttpStatus;
@@ -76,13 +77,19 @@ public class RegionController {
             @ApiResponse(description = "Invalid data", responseCode = "400")
     })
     @PutMapping("/{regionId}")
-    public ResponseEntity<?> updateRegion(@PathVariable Long regionId, @RequestBody Region region) {
-        if (regionId == null || region.getName() == null || region.getLatitude() == null || region.getLongitude() == null) {
+    public ResponseEntity<?> updateRegion(@PathVariable Long regionId, @RequestBody RegionUpdateDTO regionUpdateDTO) {
+        if (regionId == null || regionUpdateDTO.getName() == null || regionUpdateDTO.getLatitude() == null || regionUpdateDTO.getLongitude() == null) {
             return ResponseEntity.badRequest().body("Invalid data");
         }
 
+        Region region = new Region();
+        region.setName(regionUpdateDTO.getName());
+        region.setParentRegion(regionUpdateDTO.getParentRegion());
+        region.setLatitude(regionUpdateDTO.getLatitude());
+        region.setLongitude(regionUpdateDTO.getLongitude());
+
         return regionService.updateRegion(regionId, region)
-                .map(ResponseEntity::ok)
+                .map(updatedRegion -> ResponseEntity.ok(updatedRegion))
                 .orElse(ResponseEntity.notFound().build());
     }
 

@@ -28,6 +28,7 @@ public class RegionService {
 
     public Optional<Region> updateRegion(Long id, Region newRegion) {
         return regionRepository.findById(id).map(region -> {
+            region.setAccountId(region.getAccountId());
             region.setName(newRegion.getName());
             region.setLatitude(newRegion.getLatitude());
             region.setLongitude(newRegion.getLongitude());

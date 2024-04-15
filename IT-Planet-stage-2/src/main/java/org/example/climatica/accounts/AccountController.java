@@ -1,6 +1,7 @@
 package org.example.climatica.accounts;
 
 import io.micrometer.common.util.StringUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import org.example.climatica.auth.dto.UserRegistrationDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,9 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/accounts")
@@ -69,8 +72,13 @@ public class AccountController {
             @ApiResponse(description = "Conflict - email already exists", responseCode = "409")
     })
     @PutMapping("/{accountId}")
-    public ResponseEntity<AccountResponseDto> updateUser(@PathVariable Integer accountId, @Valid @RequestBody UserRegistrationDto userDto) {
-        if (accountId == null || accountId <= 0
+    public ResponseEntity<AccountResponseDto> updateUser(@PathVariable Integer accountId, @Valid @RequestBody UserRegistrationDto userDto, HttpServletRequest request) {
+        Optional<Integer> userId = getUserIdFromCookies(request);
+        if (userId.isEmpty() || !userId.get().equals(accountId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
+        }
+
+        if (accountId <= 0
                 || StringUtils.isBlank(userDto.getFirstName())
                 || StringUtils.isBlank(userDto.getLastName())
                 || StringUtils.isBlank(userDto.getEmail())
@@ -87,11 +95,33 @@ public class AccountController {
             @ApiResponse(description = "Forbidden - not owner or user not found", responseCode = "403")
     })
     @DeleteMapping("/{accountId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Integer accountId) {
-        if (accountId == null || accountId <= 0) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Integer accountId, HttpServletRequest request) {
+        Optional<Integer> userId = getUserIdFromCookies(request);
+        if (userId.isEmpty() || !userId.get().equals(accountId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
+        }
+
+        if (accountId <= 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid account ID");
         }
         accountService.deleteUser(accountId);
         return ResponseEntity.ok().build();
+    }
+
+    private Optional<Integer> getUserIdFromCookies(HttpServletRequest request) {
+        if (request.getCookies() == null) {
+            return Optional.empty();
+        }
+
+        return Arrays.stream(request.getCookies())
+                .filter(c -> "userId".equals(c.getName()))
+                .findFirst()
+                .map(cookie -> {
+                    try {
+                        return Integer.parseInt(cookie.getValue());
+                    } catch (NumberFormatException e) {
+                        return null;
+                    }
+                });
     }
 }

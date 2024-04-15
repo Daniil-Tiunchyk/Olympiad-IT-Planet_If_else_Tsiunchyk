@@ -17,7 +17,6 @@ public class UserRegistrationDto {
     private String lastName;
 
     @NotBlank(message = "Email is required and cannot be empty or just whitespace")
-    @Email(message = "Email should be valid")
     private String email;
 
     @NotBlank(message = "Password is required and cannot be empty or just whitespace")
