@@ -25,7 +25,7 @@ Climatica API следует стандартной архитектуре Sprin
    docker-compose up -d
    ```
 
-Swagger доступен по адресу: http://localhost:8080/api/
+Swagger доступен по адресу: [http://localhost:8080/swagger-ui/index.html#/](http://localhost:8080/swagger-ui/index.html#/)
 
 ## Локальный запуск (без Docker)
 
