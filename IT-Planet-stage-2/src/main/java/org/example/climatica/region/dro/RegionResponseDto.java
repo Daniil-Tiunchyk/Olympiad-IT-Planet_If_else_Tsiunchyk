@@ -1,9 +1,11 @@
 package org.example.climatica.region.dro;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.example.climatica.model.Region;
 
 @Data
+@NoArgsConstructor
 public class RegionResponseDto {
     private Long id;
     private String name;

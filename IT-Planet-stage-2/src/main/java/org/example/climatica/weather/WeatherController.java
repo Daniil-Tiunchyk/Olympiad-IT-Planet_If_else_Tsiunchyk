@@ -83,6 +83,13 @@ public class WeatherController {
         }
     }
 
+    @Operation(summary = "Add weather data",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Weather data added successfully"),
+                    @ApiResponse(responseCode = "400", description = "Invalid parameters provided"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized access"),
+                    @ApiResponse(responseCode = "404", description = "Region or forecast ID not found")
+            })
     @PostMapping
     public ResponseEntity<?> addWeather(@RequestBody WeatherDataCreateRequest request) {
         try {

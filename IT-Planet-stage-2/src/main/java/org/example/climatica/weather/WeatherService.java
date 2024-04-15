@@ -85,10 +85,30 @@ public class WeatherService {
         weatherRepository.delete(weather);
     }
 
-    public WeatherData addWeather(Long regionId, Long weatherId, WeatherData weatherData) throws UnauthorizedException, NotFoundException {
-        WeatherData existingWeather = getWeatherByRegionId(regionId);
-        //todo: existingWeather.mergeWith(weatherData); // Метод для комбинирования данных
-        return weatherRepository.save(existingWeather);
+    public WeatherData addWeatherToRegion(long regionId, long weatherId) {
+        Region region = regionRepository.findById(regionId)
+                .orElseThrow(() -> new NotFoundException("Region with ID " + regionId + " not found"));
+
+        WeatherData weatherData = weatherRepository.findById(weatherId)
+                .orElseThrow(() -> new NotFoundException("Weather with ID " + weatherId + " not found"));
+
+        weatherData.setRegion(region);
+        return weatherRepository.save(weatherData);
+    }
+
+    public Region deleteWeatherFromRegion(long regionId, long weatherId) {
+        Region region = regionRepository.findById(regionId)
+                .orElseThrow(() -> new NotFoundException("Region with ID " + regionId + " not found"));
+
+        WeatherData weatherData = weatherRepository.findById(weatherId)
+                .orElseThrow(() -> new NotFoundException("Weather with ID " + weatherId + " not found"));
+
+        if (!weatherData.getRegion().equals(region)) {
+            throw new NotFoundException("Weather does not belong to the specified region");
+        }
+
+        weatherRepository.delete(weatherData);
+        return region;
     }
 
     public void deleteWeather(Long regionId, Long weatherId) throws UnauthorizedException, NotFoundException {
