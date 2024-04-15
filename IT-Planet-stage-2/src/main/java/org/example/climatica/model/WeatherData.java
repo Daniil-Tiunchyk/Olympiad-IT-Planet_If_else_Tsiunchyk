@@ -22,7 +22,10 @@ public class WeatherData {
     private float temperature;
     private float humidity;
     private float windSpeed;
+
+    @Enumerated(EnumType.STRING)
     private WeatherCondition weatherCondition;
+
     private float precipitationAmount;
     private LocalDateTime measurementDateTime;
 

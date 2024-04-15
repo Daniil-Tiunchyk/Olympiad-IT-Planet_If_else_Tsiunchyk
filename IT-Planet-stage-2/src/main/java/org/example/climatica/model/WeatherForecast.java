@@ -1,9 +1,6 @@
 package org.example.climatica.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +15,9 @@ public class WeatherForecast {
     private Long id;
     private LocalDateTime dateTime;
     private Float temperature;
+
+    @Enumerated(EnumType.STRING)
     private WeatherCondition weatherCondition;
+
     private Long regionId;
 }
