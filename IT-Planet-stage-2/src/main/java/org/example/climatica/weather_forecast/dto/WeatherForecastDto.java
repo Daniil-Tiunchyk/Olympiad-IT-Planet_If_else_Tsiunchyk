@@ -1,4 +1,4 @@
-package org.example.climatica.dto;
+package org.example.climatica.weather_forecast.dto;
 
 import lombok.Data;
 

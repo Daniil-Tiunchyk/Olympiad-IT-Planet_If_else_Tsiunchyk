@@ -1,10 +1,9 @@
-package org.example.climatica.service;
+package org.example.climatica.weather_forecast;
 
-import org.example.climatica.dto.CreateWeatherForecastDto;
-import org.example.climatica.dto.UpdateWeatherForecastDto;
-import org.example.climatica.dto.WeatherForecastDto;
+import org.example.climatica.weather_forecast.dto.WeatherForecastDto;
 import org.example.climatica.model.WeatherForecast;
-import org.example.climatica.repository.WeatherForecastRepository;
+import org.example.climatica.weather_forecast.dto.CreateWeatherForecastDto;
+import org.example.climatica.weather_forecast.dto.UpdateWeatherForecastDto;
 import org.springframework.stereotype.Service;
 
 @Service

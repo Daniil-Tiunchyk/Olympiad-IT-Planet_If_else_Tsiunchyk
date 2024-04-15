@@ -6,7 +6,7 @@ import org.example.climatica.model.Region;
 import org.example.climatica.model.WeatherData;
 import org.example.climatica.region.dro.RegionDTO;
 import org.example.climatica.region.dro.RegionResponseDto;
-import org.example.climatica.service.WeatherService;
+import org.example.climatica.weather.WeatherService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

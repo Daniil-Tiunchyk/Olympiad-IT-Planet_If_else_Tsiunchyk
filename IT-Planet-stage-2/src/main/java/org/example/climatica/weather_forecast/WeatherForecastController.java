@@ -1,13 +1,12 @@
-package org.example.climatica.controller;
+package org.example.climatica.weather_forecast;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.example.climatica.dto.CreateWeatherForecastDto;
-import org.example.climatica.dto.UpdateWeatherForecastDto;
-import org.example.climatica.dto.WeatherForecastDto;
-import org.example.climatica.service.WeatherForecastService;
+import org.example.climatica.weather_forecast.dto.CreateWeatherForecastDto;
+import org.example.climatica.weather_forecast.dto.UpdateWeatherForecastDto;
+import org.example.climatica.weather_forecast.dto.WeatherForecastDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

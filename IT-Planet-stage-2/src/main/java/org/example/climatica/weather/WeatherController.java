@@ -1,4 +1,4 @@
-package org.example.climatica.controller;
+package org.example.climatica.weather;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -8,7 +8,7 @@ import org.example.climatica.exception.InvalidParametersException;
 import org.example.climatica.exception.NotFoundException;
 import org.example.climatica.exception.UnauthorizedException;
 import org.example.climatica.model.WeatherData;
-import org.example.climatica.service.WeatherService;
+import org.example.climatica.weather.WeatherService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
