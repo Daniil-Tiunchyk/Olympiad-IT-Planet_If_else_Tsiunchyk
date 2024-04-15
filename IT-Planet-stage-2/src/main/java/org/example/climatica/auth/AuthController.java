@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.example.climatica.accounts.AccountResponseDto;
 import org.example.climatica.auth.dto.LoginDto;
 import org.example.climatica.auth.dto.UserIdDto;
@@ -69,14 +71,14 @@ public class AuthController {
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "User login", responses = {
-            @ApiResponse(description = "User logged in successfully", responseCode = "200", content = @Content(schema = @Schema(implementation = UserIdDto.class))),
-            @ApiResponse(description = "Unauthorized - incorrect email or password", responseCode = "401")
-    })
     @PostMapping("/login")
-    public ResponseEntity<UserIdDto> loginUser(@Valid @RequestBody LoginDto loginDto) {
+    public ResponseEntity<UserIdDto> loginUser(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response) {
         try {
             UserIdDto userIdDto = authService.loginUser(loginDto);
+            Cookie cookie = new Cookie("userId", userIdDto.getId().toString());
+            cookie.setHttpOnly(true);
+            cookie.setPath("/");
+            response.addCookie(cookie);
             return ResponseEntity.ok(userIdDto);
         } catch (UsernameNotFoundException | BadCredentialsException ex) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, ex.getMessage());
