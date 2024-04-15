@@ -44,7 +44,7 @@ Swagger доступен по адресу: http://localhost:8080/api/
    mvn spring-boot:run
    ```
 
-Swagger доступен по адресу: http://localhost:8080/api/
+Swagger доступен по адресу: [http://localhost:8080/swagger-ui/index.html#/](http://localhost:8080/swagger-ui/index.html#/)
 
 ## Лицензия
 
