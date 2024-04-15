@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.example.climatica.accounts.dto.UserResponseDto;
+import org.example.climatica.accounts.AccountResponseDto;
 import org.example.climatica.auth.dto.LoginDto;
 import org.example.climatica.auth.dto.UserIdDto;
 import org.example.climatica.auth.dto.UserRegistrationDto;
@@ -36,13 +36,13 @@ public class AuthController {
     }
 
     @Operation(summary = "Create a new user", responses = {
-            @ApiResponse(description = "User created successfully", responseCode = "201", content = @Content(schema = @Schema(implementation = UserResponseDto.class))),
+            @ApiResponse(description = "User created successfully", responseCode = "201", content = @Content(schema = @Schema(implementation = AccountResponseDto.class))),
             @ApiResponse(description = "Bad Request", responseCode = "400"),
             @ApiResponse(description = "Forbidden - authorized account", responseCode = "403"),
             @ApiResponse(description = "Conflict - email already exists", responseCode = "409")
     })
     @PostMapping("/registration")
-    public ResponseEntity<UserResponseDto> registerUser(@RequestBody UserRegistrationDto userDto) {
+    public ResponseEntity<AccountResponseDto> registerUser(@RequestBody UserRegistrationDto userDto) {
         String email = userDto.getEmail() != null ? userDto.getEmail().trim() : "";
         String firstName = userDto.getFirstName() != null ? userDto.getFirstName().trim() : "";
         String lastName = userDto.getLastName() != null ? userDto.getLastName().trim() : "";
@@ -65,7 +65,7 @@ public class AuthController {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "An account with this email already exists");
         }
 
-        UserResponseDto createdUser = authService.registerUser(userDto);
+        AccountResponseDto createdUser = authService.registerUser(userDto);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 

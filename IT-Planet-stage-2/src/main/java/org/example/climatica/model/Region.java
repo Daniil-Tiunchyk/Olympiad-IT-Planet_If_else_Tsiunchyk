@@ -11,12 +11,10 @@ public class Region {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private Long regionType;
+    private Long accountId;
     private String name;
+    private String parentRegion;
     private Double latitude;
     private Double longitude;
-
-    @ManyToOne
-    @JoinColumn(name = "region_type_id")
-    private RegionType type;
 }

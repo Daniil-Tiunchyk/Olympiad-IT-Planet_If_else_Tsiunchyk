@@ -1,7 +1,6 @@
 package org.example.climatica.accounts;
 
 import io.micrometer.common.util.StringUtils;
-import org.example.climatica.accounts.dto.UserResponseDto;
 import org.example.climatica.auth.dto.UserRegistrationDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,13 +28,13 @@ public class AccountController {
     }
 
     @Operation(summary = "Get user by ID", responses = {
-            @ApiResponse(description = "User found", responseCode = "200", content = @Content(schema = @Schema(implementation = UserResponseDto.class))),
+            @ApiResponse(description = "User found", responseCode = "200", content = @Content(schema = @Schema(implementation = AccountResponseDto.class))),
             @ApiResponse(description = "Bad Request", responseCode = "400"),
             @ApiResponse(description = "Unauthorized", responseCode = "401"),
             @ApiResponse(description = "User not found", responseCode = "404")
     })
     @GetMapping("/{accountId}")
-    public ResponseEntity<UserResponseDto> getUserById(@PathVariable Integer accountId) {
+    public ResponseEntity<AccountResponseDto> getUserById(@PathVariable Integer accountId) {
         if (accountId == null || accountId <= 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid account ID");
         }
@@ -44,16 +43,16 @@ public class AccountController {
 
     @Operation(summary = "Search accounts", description = "Search for accounts by first name, last name, or email with pagination",
             responses = {
-                    @ApiResponse(description = "Search results returned successfully", responseCode = "200", content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserResponseDto.class)))),
+                    @ApiResponse(description = "Search results returned successfully", responseCode = "200", content = @Content(array = @ArraySchema(schema = @Schema(implementation = AccountResponseDto.class)))),
                     @ApiResponse(description = "Bad Request - invalid form or size parameters", responseCode = "400"),
                     @ApiResponse(description = "Unauthorized - invalid authentication credentials", responseCode = "401")
             })
     @GetMapping("/search")
-    public ResponseEntity<List<UserResponseDto>> searchUsers(@RequestParam(required = false) String firstName,
-                                                             @RequestParam(required = false) String lastName,
-                                                             @RequestParam(required = false) String email,
-                                                             @RequestParam(defaultValue = "0") int form,
-                                                             @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<List<AccountResponseDto>> searchUsers(@RequestParam(required = false) String firstName,
+                                                                @RequestParam(required = false) String lastName,
+                                                                @RequestParam(required = false) String email,
+                                                                @RequestParam(defaultValue = "0") int form,
+                                                                @RequestParam(defaultValue = "10") int size) {
 
         if (form < 0 || size <= 0) {
             return ResponseEntity.badRequest().build();
@@ -63,14 +62,14 @@ public class AccountController {
 
 
     @Operation(summary = "Update user", responses = {
-            @ApiResponse(description = "User updated successfully", responseCode = "200", content = @Content(schema = @Schema(implementation = UserResponseDto.class))),
+            @ApiResponse(description = "User updated successfully", responseCode = "200", content = @Content(schema = @Schema(implementation = AccountResponseDto.class))),
             @ApiResponse(description = "Bad Request", responseCode = "400"),
             @ApiResponse(description = "Unauthorized", responseCode = "401"),
             @ApiResponse(description = "Forbidden - not owner or user not found", responseCode = "403"),
             @ApiResponse(description = "Conflict - email already exists", responseCode = "409")
     })
     @PutMapping("/{accountId}")
-    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Integer accountId, @Valid @RequestBody UserRegistrationDto userDto) {
+    public ResponseEntity<AccountResponseDto> updateUser(@PathVariable Integer accountId, @Valid @RequestBody UserRegistrationDto userDto) {
         if (accountId == null || accountId <= 0
                 || StringUtils.isBlank(userDto.getFirstName())
                 || StringUtils.isBlank(userDto.getLastName())

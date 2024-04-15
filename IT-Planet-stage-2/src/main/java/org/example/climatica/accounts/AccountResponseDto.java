@@ -1,9 +1,9 @@
-package org.example.climatica.accounts.dto;
+package org.example.climatica.accounts;
 
 import lombok.Data;
 
 @Data
-public class UserResponseDto {
+public class AccountResponseDto {
     private Long id;
     private String firstName;
     private String lastName;

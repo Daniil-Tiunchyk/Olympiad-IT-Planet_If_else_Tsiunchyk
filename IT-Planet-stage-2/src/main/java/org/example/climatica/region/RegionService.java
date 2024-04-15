@@ -1,7 +1,6 @@
-package org.example.climatica.service;
+package org.example.climatica.region;
 
 import org.example.climatica.model.Region;
-import org.example.climatica.repository.RegionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,23 +14,24 @@ public class RegionService {
         this.regionRepository = regionRepository;
     }
 
-    @Transactional(readOnly = true)
     public Optional<Region> findRegionById(Long id) {
         return regionRepository.findById(id);
     }
 
-    @Transactional
     public Region saveRegion(Region region) {
         return regionRepository.save(region);
     }
 
-    @Transactional
+    public boolean existsByLatitudeAndLongitude(Double latitude, Double longitude) {
+        return regionRepository.findByLatitudeAndLongitude(latitude, longitude).isPresent();
+    }
+
     public Optional<Region> updateRegion(Long id, Region newRegion) {
         return regionRepository.findById(id).map(region -> {
             region.setName(newRegion.getName());
             region.setLatitude(newRegion.getLatitude());
             region.setLongitude(newRegion.getLongitude());
-            region.setType(newRegion.getType());
+            region.setRegionType(newRegion.getRegionType());
             return regionRepository.save(region);
         });
     }

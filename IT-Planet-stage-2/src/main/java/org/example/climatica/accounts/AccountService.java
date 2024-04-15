@@ -1,8 +1,7 @@
 package org.example.climatica.accounts;
 
-import org.example.climatica.accounts.dto.UserResponseDto;
 import org.example.climatica.auth.dto.UserRegistrationDto;
-import org.example.climatica.model.User;
+import org.example.climatica.model.Account;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -22,22 +21,22 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
 
-    public UserResponseDto getUserById(int id) {
-        User user = accountRepository.findById(id)
+    public AccountResponseDto getUserById(int id) {
+        Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        UserResponseDto userResponseDto = new UserResponseDto();
-        userResponseDto.setId(user.getId());
-        userResponseDto.setEmail(user.getEmail());
-        userResponseDto.setLastName(user.getLastName());
-        userResponseDto.setFirstName(user.getLastName());
-        return userResponseDto;
+        AccountResponseDto accountResponseDto = new AccountResponseDto();
+        accountResponseDto.setId(account.getId());
+        accountResponseDto.setEmail(account.getEmail());
+        accountResponseDto.setLastName(account.getLastName());
+        accountResponseDto.setFirstName(account.getLastName());
+        return accountResponseDto;
     }
 
-    public UserResponseDto updateUser(int id, UserRegistrationDto userDto) {
-        User currentUser = accountRepository.findById(id)
+    public AccountResponseDto updateUser(int id, UserRegistrationDto userDto) {
+        Account currentAccount = accountRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "User not found"));
 
-        if (!currentUser.getEmail().equals(userDto.getEmail()) && accountRepository.findByEmail(userDto.getEmail()).isPresent()) {
+        if (!currentAccount.getEmail().equals(userDto.getEmail()) && accountRepository.findByEmail(userDto.getEmail()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
         }
 
@@ -45,17 +44,17 @@ public class AccountService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized to update this user");
         }
 
-        currentUser.setFirstName(userDto.getFirstName());
-        currentUser.setLastName(userDto.getLastName());
-        currentUser.setEmail(userDto.getEmail());
-        User savedUser = accountRepository.save(currentUser);
+        currentAccount.setFirstName(userDto.getFirstName());
+        currentAccount.setLastName(userDto.getLastName());
+        currentAccount.setEmail(userDto.getEmail());
+        Account savedAccount = accountRepository.save(currentAccount);
 
-        UserResponseDto userResponseDto = new UserResponseDto();
-        userResponseDto.setId(savedUser.getId());
-        userResponseDto.setEmail(savedUser.getEmail());
-        userResponseDto.setFirstName(savedUser.getFirstName());
-        userResponseDto.setLastName(savedUser.getLastName());
-        return userResponseDto;
+        AccountResponseDto accountResponseDto = new AccountResponseDto();
+        accountResponseDto.setId(savedAccount.getId());
+        accountResponseDto.setEmail(savedAccount.getEmail());
+        accountResponseDto.setFirstName(savedAccount.getFirstName());
+        accountResponseDto.setLastName(savedAccount.getLastName());
+        return accountResponseDto;
     }
 
     private boolean isAuthorizedToUpdate(int userId) {
@@ -63,9 +62,9 @@ public class AccountService {
         return true;
     }
 
-    public List<UserResponseDto> searchUsers(String firstName, String lastName, String email, int from, int size) {
+    public List<AccountResponseDto> searchUsers(String firstName, String lastName, String email, int from, int size) {
         Pageable pageable = PageRequest.of(from, size);
-        Page<User> page = accountRepository.findByFirstNameContainingAndLastNameContainingAndEmailContaining(
+        Page<Account> page = accountRepository.findByFirstNameContainingAndLastNameContainingAndEmailContaining(
                 firstName, lastName, email, pageable);
 
         return page.getContent().stream()
@@ -92,12 +91,12 @@ public class AccountService {
         return true;
     }
 
-    private UserResponseDto convertToDto(User user) {
-        UserResponseDto userDto = new UserResponseDto();
-        userDto.setId(user.getId());
-        userDto.setFirstName(user.getFirstName());
-        userDto.setLastName(user.getLastName());
-        userDto.setEmail(user.getEmail());
+    private AccountResponseDto convertToDto(Account account) {
+        AccountResponseDto userDto = new AccountResponseDto();
+        userDto.setId(account.getId());
+        userDto.setFirstName(account.getFirstName());
+        userDto.setLastName(account.getLastName());
+        userDto.setEmail(account.getEmail());
         return userDto;
     }
 }

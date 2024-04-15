@@ -1,10 +1,11 @@
-package org.example.climatica.controller;
+package org.example.climatica.region;
 
 import org.example.climatica.exception.NotFoundException;
 import org.example.climatica.exception.UnauthorizedException;
 import org.example.climatica.model.Region;
 import org.example.climatica.model.WeatherData;
-import org.example.climatica.service.RegionService;
+import org.example.climatica.region.dro.RegionDTO;
+import org.example.climatica.region.dro.RegionResponseDto;
 import org.example.climatica.service.WeatherService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,16 +43,27 @@ public class RegionController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @Operation(summary = "Add a new region", responses = {
-            @ApiResponse(description = "Region created", responseCode = "201", content = @Content(schema = @Schema(implementation = Region.class))),
-            @ApiResponse(description = "Invalid data", responseCode = "400")
-    })
     @PostMapping
-    public ResponseEntity<?> addRegion(@RequestBody Region region) {
-        if (region.getName() == null || region.getLatitude() == null || region.getLongitude() == null) {
-            return ResponseEntity.badRequest().body("Name, latitude, and longitude cannot be null");
+    public ResponseEntity<?> addRegion(@RequestBody RegionDTO regionDto, @CookieValue(value = "accountId", defaultValue = "1") Long accountId) {
+        if (regionDto.getLatitude() == null || regionDto.getLongitude() == null || regionDto.getName() == null) {
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(regionService.saveRegion(region));
+
+        if (regionService.existsByLatitudeAndLongitude(regionDto.getLatitude(), regionDto.getLongitude())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Region with the same latitude and longitude already exists");
+        }
+
+        Region region = new Region();
+        region.setName(regionDto.getName());
+        region.setParentRegion(regionDto.getParentRegion());
+        region.setLatitude(regionDto.getLatitude());
+        region.setLongitude(regionDto.getLongitude());
+        region.setRegionType(regionDto.getRegionType());
+        region.setAccountId(accountId);
+        region = regionService.saveRegion(region);
+
+        RegionResponseDto responseDto = new RegionResponseDto(region);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     @Operation(summary = "Update an existing region", responses = {
@@ -64,6 +76,7 @@ public class RegionController {
         if (regionId == null || region.getName() == null || region.getLatitude() == null || region.getLongitude() == null) {
             return ResponseEntity.badRequest().body("Invalid data");
         }
+
         return regionService.updateRegion(regionId, region)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

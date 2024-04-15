@@ -3,8 +3,8 @@ package org.example.climatica.auth;
 import org.example.climatica.auth.dto.LoginDto;
 import org.example.climatica.auth.dto.UserIdDto;
 import org.example.climatica.auth.dto.UserRegistrationDto;
-import org.example.climatica.accounts.dto.UserResponseDto;
-import org.example.climatica.model.User;
+import org.example.climatica.accounts.AccountResponseDto;
+import org.example.climatica.model.Account;
 import org.example.climatica.accounts.AccountRepository;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,27 +24,27 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public UserResponseDto registerUser(UserRegistrationDto userDto) {
-        User user = new User();
-        user.setFirstName(userDto.getFirstName().trim());
-        user.setLastName(userDto.getLastName().trim());
-        user.setEmail(userDto.getEmail().trim().toLowerCase());
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+    public AccountResponseDto registerUser(UserRegistrationDto userDto) {
+        Account account = new Account();
+        account.setFirstName(userDto.getFirstName().trim());
+        account.setLastName(userDto.getLastName().trim());
+        account.setEmail(userDto.getEmail().trim().toLowerCase());
+        account.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-        User savedUser = accountRepository.save(user);
-        UserResponseDto userResponseDto = new UserResponseDto();
+        Account savedAccount = accountRepository.save(account);
+        AccountResponseDto accountResponseDto = new AccountResponseDto();
 
-        userResponseDto.setId(savedUser.getId());
-        userResponseDto.setEmail(savedUser.getEmail());
-        userResponseDto.setFirstName(savedUser.getFirstName());
-        userResponseDto.setLastName(savedUser.getLastName());
-        userResponseDto.setId(user.getId());
+        accountResponseDto.setId(savedAccount.getId());
+        accountResponseDto.setEmail(savedAccount.getEmail());
+        accountResponseDto.setFirstName(savedAccount.getFirstName());
+        accountResponseDto.setLastName(savedAccount.getLastName());
+        accountResponseDto.setId(account.getId());
 
-        return userResponseDto;
+        return accountResponseDto;
     }
 
     public UserIdDto loginUser(LoginDto loginDto) {
-        Optional<User> user = accountRepository.findByEmail(loginDto.getEmail());
+        Optional<Account> user = accountRepository.findByEmail(loginDto.getEmail());
         if (user.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
         }
