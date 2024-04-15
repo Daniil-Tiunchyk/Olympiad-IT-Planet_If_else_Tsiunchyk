@@ -1,7 +1,6 @@
-package org.example.climatica.controller;
+package org.example.climatica.region_type;
 
 import org.example.climatica.model.RegionType;
-import org.example.climatica.service.RegionTypeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +9,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/region/types")
@@ -39,27 +40,50 @@ public class RegionTypeController {
 
     @Operation(summary = "Add a new region type", responses = {
             @ApiResponse(description = "Region type created", responseCode = "201", content = @Content(schema = @Schema(implementation = RegionType.class))),
-            @ApiResponse(description = "Invalid data", responseCode = "400")
+            @ApiResponse(description = "Invalid data", responseCode = "400"),
+            @ApiResponse(description = "Type already exists", responseCode = "409")
     })
     @PostMapping
-    public ResponseEntity<?> addRegionType(@RequestBody RegionType regionType) {
-        if (regionType.getType() == null || regionType.getType().trim().isEmpty()) {
+    public ResponseEntity<?> addRegionType(@RequestBody RegionTypeDto regionTypeDto) {
+        if (regionTypeDto.getType() == null || regionTypeDto.getType().trim().isEmpty()) {
             return ResponseEntity.badRequest().body("Type cannot be null or empty");
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(regionTypeService.saveRegionType(regionType));
+
+        Optional<RegionType> existingRegionType = regionTypeService.findByType(regionTypeDto.getType());
+        if (existingRegionType.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Region type with this 'type' already exists");
+        }
+
+        RegionType regionType = convertToEntity(regionTypeDto);
+        RegionType savedRegionType = regionTypeService.saveRegionType(regionType);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedRegionType);
+    }
+
+    private RegionType convertToEntity(RegionTypeDto dto) {
+        RegionType regionType = new RegionType();
+        regionType.setType(dto.getType());
+        return regionType;
     }
 
     @Operation(summary = "Update an existing region type", responses = {
             @ApiResponse(description = "Region type updated", responseCode = "200", content = @Content(schema = @Schema(implementation = RegionType.class))),
+            @ApiResponse(description = "Invalid data", responseCode = "400"),
+            @ApiResponse(description = "Unauthorized", responseCode = "401"),
             @ApiResponse(description = "Region type not found", responseCode = "404"),
-            @ApiResponse(description = "Invalid data", responseCode = "400")
+            @ApiResponse(description = "Type already exists", responseCode = "409")
     })
     @PutMapping("/{typeId}")
-    public ResponseEntity<?> updateRegionType(@PathVariable Long typeId, @RequestBody RegionType regionType) {
-        if (typeId == null || typeId <= 0 || regionType.getType() == null || regionType.getType().trim().isEmpty()) {
+    public ResponseEntity<?> updateRegionType(@PathVariable Long typeId, @RequestBody RegionTypeDto regionTypeDto) {
+        if (typeId == null || typeId <= 0 || regionTypeDto.getType() == null || regionTypeDto.getType().trim().isEmpty()) {
             return ResponseEntity.badRequest().body("Invalid data");
         }
-        return regionTypeService.updateRegionType(typeId, regionType)
+
+        Optional<RegionType> existingType = regionTypeService.findByType(regionTypeDto.getType());
+        if (existingType.isPresent() && !existingType.get().getId().equals(typeId)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Type already exists");
+        }
+
+        return regionTypeService.updateRegionType(typeId, regionTypeDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

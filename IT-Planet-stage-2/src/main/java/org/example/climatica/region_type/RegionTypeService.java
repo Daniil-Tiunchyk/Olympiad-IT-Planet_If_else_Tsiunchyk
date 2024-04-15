@@ -1,9 +1,7 @@
-package org.example.climatica.service;
+package org.example.climatica.region_type;
 
 import org.example.climatica.model.RegionType;
-import org.example.climatica.repository.RegionTypeRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -15,25 +13,25 @@ public class RegionTypeService {
         this.regionTypeRepository = regionTypeRepository;
     }
 
-    @Transactional(readOnly = true)
     public Optional<RegionType> findRegionTypeById(Long id) {
         return regionTypeRepository.findById(id);
     }
 
-    @Transactional
     public RegionType saveRegionType(RegionType regionType) {
         return regionTypeRepository.save(regionType);
     }
 
-    @Transactional
-    public Optional<RegionType> updateRegionType(Long id, RegionType newRegionType) {
+    public Optional<RegionType> findByType(String type) {
+        return regionTypeRepository.findByType(type);
+    }
+
+    public Optional<RegionType> updateRegionType(Long id, RegionTypeDto dto) {
         return regionTypeRepository.findById(id).map(type -> {
-            type.setType(newRegionType.getType());
+            type.setType(dto.getType());
             return regionTypeRepository.save(type);
         });
     }
 
-    @Transactional
     public boolean deleteRegionType(Long id) {
         return regionTypeRepository.findById(id).map(type -> {
             regionTypeRepository.delete(type);
